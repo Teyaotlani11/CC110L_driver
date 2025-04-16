@@ -8,14 +8,9 @@
 #include <unistd.h>
 #include "spi_wraper.h"
 
-static const uint8_t mode = 0;
-static const uint32_t speed = 4000000;
-static const uint8_t bits = 8;
-
-
 static int spi_dscptr;
 
-int spi_wraper_init(void)
+int spi_wraper_init(t_spi_wraper_cfg const * const ps_spi_cfg)
 {
     spi_dscptr = open("/dev/spidev0.0", O_RDWR);
     if (spi_dscptr < 0)
@@ -24,7 +19,7 @@ int spi_wraper_init(void)
         return -1;
     }
 
-    if (ioctl(spi_dscptr, SPI_IOC_WR_MODE, &mode) < 0)
+    if (ioctl(spi_dscptr, SPI_IOC_WR_MODE, &ps_spi_cfg->u8_mode) < 0)
     {
         printf("Error setting SPI mode");
         close(spi_dscptr);
@@ -32,7 +27,7 @@ int spi_wraper_init(void)
     }
 
     
-    if (ioctl(spi_dscptr, SPI_IOC_WR_MAX_SPEED_HZ, &speed) < 0)
+    if (ioctl(spi_dscptr, SPI_IOC_WR_MAX_SPEED_HZ, &ps_spi_cfg->u32_speed) < 0)
     {
         printf("Error setting SPI speed");
         close(spi_dscptr);
@@ -40,7 +35,7 @@ int spi_wraper_init(void)
     }
 
     
-    if (ioctl(spi_dscptr, SPI_IOC_WR_BITS_PER_WORD, &bits) < 0)
+    if (ioctl(spi_dscptr, SPI_IOC_WR_BITS_PER_WORD, &ps_spi_cfg->u8_bits) < 0)
     {
         printf("Error setting SPI bits");
         close(spi_dscptr);
